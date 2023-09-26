@@ -25,6 +25,7 @@ st.sidebar.image("growth.png", width=190)
 
 with st.sidebar:
     st.markdown("""# Welcome to Self-Improvement Guru""")
+    openai_api_key = st.sidebar.text_input("Enter your OpenAI API Key (mandatory)", type="password")
     st.markdown(
         "Unlock your full potential and embark on a transformative journey of self-improvement with our revolutionary chatbot, the \"Self-Improvement Guru.\" "
         )
@@ -35,22 +36,19 @@ with st.sidebar:
     st.markdown("A project by Munsif Raza")
     st.markdown("""[![Follow](https://img.shields.io/badge/LinkedIn-0A66C2.svg?style=for-the-badge&logo=LinkedIn&logoColor=white)](https://www.linkedin.com/in/munsifraza/)""")
   
-# Getting the OpenAI API key from Streamlit Secrets
-openai_api_key = st.secrets.OPENAI_API_KEY
-os.environ["OPENAI_API_KEY"] = openai_api_key
-
-# Getting the Pinecone API key and environment from Streamlit Secrets
-PINECONE_API_KEY = st.secrets.PINECONE_API_KEY
-os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
-PINECONE_ENV = st.secrets.PINECONE_ENV
-os.environ["PINECONE_ENV"] = PINECONE_ENV
-# Initialize Pinecone with API key and environment
-pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENV)
-
-
-embeddings = OpenAIEmbeddings()
-model_name = "gpt-3.5-turbo-16k"
-text_field = "text"
+# Getting the OpenAI API key.
+if openai_api_key:
+    os.environ["OPENAI_API_KEY"] = openai_api_key
+    # Getting the Pinecone API key and environment from Streamlit Secrets
+    PINECONE_API_KEY = st.secrets.secrets.PINECONE_API_KEY
+    os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
+    PINECONE_ENV = st.secrets.secrets.PINECONE_ENV
+    os.environ["PINECONE_ENV"] = PINECONE_ENV
+    # Initialize Pinecone with API key and environment
+    pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENV)
+    embeddings = OpenAIEmbeddings()
+    model_name = "gpt-3.5-turbo-16k"
+    text_field = "text"
 
 @st.cache_resource
 def ret():
