@@ -40,9 +40,9 @@ with st.sidebar:
 if openai_api_key:
     os.environ["OPENAI_API_KEY"] = openai_api_key
     # Getting the Pinecone API key and environment from Streamlit Secrets
-    PINECONE_API_KEY = st.secrets.secrets.PINECONE_API_KEY
+    PINECONE_API_KEY = st.secrets.PINECONE_API_KEY
     os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
-    PINECONE_ENV = st.secrets.secrets.PINECONE_ENV
+    PINECONE_ENV = st.secrets.PINECONE_ENV
     os.environ["PINECONE_ENV"] = PINECONE_ENV
     # Initialize Pinecone with API key and environment
     pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENV)
