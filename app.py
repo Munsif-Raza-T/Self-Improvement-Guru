@@ -25,6 +25,7 @@ st.sidebar.image("growth.png", width=190)
 
 with st.sidebar:
     st.markdown("""# Welcome to Self-Improvement Guru""")
+    openai_api_key = st.sidebar.text_input("Enter your OpenAI API Key (mandatory)", type="password")
     st.markdown(
         "Unlock your full potential and embark on a transformative journey of self-improvement with our revolutionary chatbot, the \"Self-Improvement Guru.\" "
         )
@@ -36,21 +37,18 @@ with st.sidebar:
     st.markdown("""[![Follow](https://img.shields.io/badge/LinkedIn-0A66C2.svg?style=for-the-badge&logo=LinkedIn&logoColor=white)](https://www.linkedin.com/in/munsifraza/)""")
   
 # Getting the OpenAI API key from Streamlit Secrets
-openai_api_key = st.secrets.secrets.OPENAI_API_KEY
-os.environ["OPENAI_API_KEY"] = openai_api_key
-
-# Getting the Pinecone API key and environment from Streamlit Secrets
-PINECONE_API_KEY = st.secrets.secrets.PINECONE_API_KEY
-os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
-PINECONE_ENV = st.secrets.secrets.PINECONE_ENV
-os.environ["PINECONE_ENV"] = PINECONE_ENV
-# Initialize Pinecone with API key and environment
-pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENV)
-
-
-embeddings = OpenAIEmbeddings()
-model_name = "gpt-3.5-turbo-16k"
-text_field = "text"
+if openai_api_key:
+    os.environ["OPENAI_API_KEY"] = openai_api_key
+    # Getting the Pinecone API key and environment from Streamlit Secrets
+    PINECONE_API_KEY = st.secrets.secrets.PINECONE_API_KEY
+    os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
+    PINECONE_ENV = st.secrets.secrets.PINECONE_ENV
+    os.environ["PINECONE_ENV"] = PINECONE_ENV
+    # Initialize Pinecone with API key and environment
+    pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENV)
+    embeddings = OpenAIEmbeddings()
+    model_name = "gpt-3.5-turbo-16k"
+    text_field = "text"
 
 @st.cache_resource
 def ret():
@@ -121,7 +119,7 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 if prompt := st.chat_input():
     # Add user message to chat history
-    st.session_state.messages.append({"role": "user", "content":prompt, "avatar": "https://e7.pngegg.com/pngimages/799/987/png-clipart-computer-icons-avatar-icon-design-avatar-heroes-computer-wallpaper-thumbnail.png"})
+    st.session_state.messages.append({"role": "user", "content":prompt})
     # st.chat_message("user").write(prompt)
     # Display user message in chat message container
     with st.chat_message("user"):
@@ -134,5 +132,5 @@ if prompt := st.chat_input():
                 response = agent({'question': prompt, 'chat_history': st.session_state.chat_history})#agent({"query": prompt})#conversational_chat(prompt)#
                 st.session_state.chat_history.append((prompt, response["answer"]))
                 message_placeholder.markdown(response["answer"])
-                st.session_state.messages.append({"role": "assistant", "content": response["answer"], "avatar": "https://drive.google.com/file/d/1SASLiowvEykNjU41AkH3uOkSEXHAB4m0/view?usp=drive_link"})
+                st.session_state.messages.append({"role": "assistant", "content": response["answer"]})
             
